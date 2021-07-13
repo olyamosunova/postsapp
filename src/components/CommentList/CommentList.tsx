@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 import {getLoadedFlag} from "../../store/data/selectors";
 import Loader from "../Loader/Loader";
 
-const CommentList = ({comments, className, ...props}: CommentListProps) => {
+const CommentList = ({comments, className, ...props}: CommentListProps): JSX.Element => {
     const isPostLoaded = useSelector(getLoadedFlag);
 
     return (

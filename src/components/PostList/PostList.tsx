@@ -9,7 +9,7 @@ import {Button} from "react-bootstrap";
 import Loader from "../Loader/Loader";
 import ModalAddPost from "../ModalAddPost/ModalAddPost";
 
-const PostList = ({posts, className, ...props}: PostListProps) => {
+const PostList = ({posts, className, ...props}: PostListProps): JSX.Element => {
     const isPostLoaded = useSelector(getLoadedFlag);
 
     const [show, setShow] = useState(false);
@@ -26,14 +26,16 @@ const PostList = ({posts, className, ...props}: PostListProps) => {
 
 
             <Row>
-                {posts.map(post => {
-                    return (
-                        <Col className="py-3" md={4} key={post.id}>
-                            <PostItem post={post} />
-                        </Col>
-                    );
+                {posts.length ?
+                    posts.map(post => {
+                        return (
+                            <Col className="py-3" md={4} key={post.id}>
+                                <PostItem post={post} />
+                            </Col>
+                        );
                     })
-
+                    :
+                    <p>No posts</p>
                 }
             </Row>
 

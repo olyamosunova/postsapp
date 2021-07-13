@@ -7,7 +7,7 @@ import {Operations as DataOperations} from "../../store/data/data";
 import {useDispatch, useSelector} from "react-redux";
 import {getFormEditSendingFlag} from "../../store/data/selectors";
 
-const CommentItem = ({comment, className, ...props}: CommentItemProps) => {
+const CommentItem = ({comment, className, ...props}: CommentItemProps): JSX.Element => {
     const dispatch = useDispatch();
     const isFormSending = useSelector(getFormEditSendingFlag);
     const [isEditMode, setEditMode] = useState(false);

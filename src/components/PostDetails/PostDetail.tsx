@@ -9,7 +9,7 @@ import {getComments, getFormSendingFlag} from "../../store/data/selectors";
 import CommentList from "../CommentList/CommentList";
 
 
-const PostDetail = ({post, className, ...props}: PostDetailsProps) => {
+const PostDetail = ({post, className, ...props}: PostDetailsProps): JSX.Element => {
     const dispatch = useDispatch();
     const comments = useSelector(getComments) ?? [];
     const [message, setMessage] = useState('');
@@ -39,7 +39,8 @@ const PostDetail = ({post, className, ...props}: PostDetailsProps) => {
             postId: post.id,
             name: 'Olya Mosunova',
             email: 'test@mail.ru',
-            body: message
+            body: message,
+            id: 0
         };
 
         await dispatch(DataOperations.sendComment(commentInfo));

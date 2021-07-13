@@ -6,11 +6,15 @@ import {
     Redirect,
     RouteComponentProps
 } from "react-router-dom";
+import {createBrowserHistory} from "history";
 import PostList from "./components/PostList/PostList";
 import PostDetail from "./components/PostDetails/PostDetail";
+import NotFound from "./components/NotFound/NotFound";
 import {useSelector} from "react-redux";
-import {getComments, getPosts} from "./store/data/selectors";
+import {getPosts} from "./store/data/selectors";
 import {getPost} from "./utils";
+
+const history = createBrowserHistory();
 
 interface MatchParams {
     id: string;
@@ -18,7 +22,7 @@ interface MatchParams {
 
 interface MatchProps extends RouteComponentProps<MatchParams> {}
 
-const App: React.FC = (): JSX.Element => {
+const App = (): JSX.Element => {
     const posts = useSelector(getPosts);
 
     const renderPostPage = (id: string) => {
@@ -29,7 +33,7 @@ const App: React.FC = (): JSX.Element => {
     };
 
     return (
-        <Router>
+        <Router history={history}>
             <Switch>
                 <Route exact path="/">
                     <Redirect to="/posts" />
@@ -37,7 +41,13 @@ const App: React.FC = (): JSX.Element => {
                 <Route exact path="/posts">
                     <PostList posts={posts} />
                 </Route>
-                <Route exact path="/posts/:id"  render={({match}: MatchProps) => renderPostPage(match.params.id)} />
+                <Route
+                    exact
+                    path="/posts/:id"
+                    render={({match}: MatchProps) => renderPostPage(match.params.id)} />
+                <Route>
+                    <NotFound />
+                </Route>
             </Switch>
         </Router>
     );

@@ -8,7 +8,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {Operations as DataOperations} from "../../store/data/data";
 import {getFormSendingFlag} from "../../store/data/selectors";
 
-const ModalAddPost = ({setShow, className, ...props}: ModalAddPostProps) => {
+const ModalAddPost = ({setShow, className, ...props}: ModalAddPostProps): JSX.Element => {
     const [formState, setFormState] = useState({
         title: '',
         body: '',

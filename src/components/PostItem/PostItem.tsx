@@ -10,7 +10,7 @@ import {Operations as DataOperations} from "../../store/data/data";
 import {extend} from "../../utils";
 import {getFormSendingFlag} from "../../store/data/selectors";
 
-const PostItem = ({post, className, ...props}: PostItemProps) => {
+const PostItem = ({post, className, ...props}: PostItemProps): JSX.Element => {
     const [postInfo, setPostInfo] = useState(post);
     const [isEditMode, setEditMode] = useState(false);
     const dispatch = useDispatch();
