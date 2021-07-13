@@ -3,22 +3,24 @@ import {PostItemProps} from "./PostItem.props";
 import styles from "./PostItem.module.css";
 import cn from "classnames";
 import {Card, Button} from "react-bootstrap";
-import {PostInterface} from "../../interfaces";
 import {Link} from "react-router-dom";
 import { TrashFill, PencilFill } from 'react-bootstrap-icons';
 import {useDispatch} from "react-redux";
+import {Operations as DataOperations} from "../../store/data/data";
 
 const PostItem = ({post, className, ...props}: PostItemProps) => {
     const dispatch = useDispatch();
 
-    const handlerDeletePost = () => {};
+    const handlerDeletePost = () => {
+        dispatch(DataOperations.deletePost(post.id));
+    };
 
     return (
         <div className={styles.post}>
                 <Card>
                     <Card.Body>
-                        <Link to={`/posts/${post.id}`}>
-                            <Card.Title>{post.title}</Card.Title>
+                        <Link className={styles.postLink} to={`/posts/${post.id}`}>
+                            <Card.Title className={styles.postTitle}>{post.title}</Card.Title>
                             <Card.Text>
                                 {post.body}
                             </Card.Text>

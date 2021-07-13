@@ -24,7 +24,8 @@ const ActionType = {
     LOAD_POSTS: `LOAD_POSTS`,
     CHANGE_FLAG_POST_LOADED: `CHANGE_FLAG_POST_LOADED`,
     ADD_POST: `ADD_POST`,
-    CHANGE_FLAG_FORM_SENDING: `CHANGE_FLAG_FORM_SENDING`
+    CHANGE_FLAG_FORM_SENDING: `CHANGE_FLAG_FORM_SENDING`,
+    DELETE_POST: `DELETE_POST`
 };
 
 const ActionCreator = {
@@ -52,6 +53,12 @@ const ActionCreator = {
             payload: flag,
         };
     },
+    deletePost: (postId: number) => {
+        return {
+            type: ActionType.DELETE_POST,
+            payload: postId,
+        };
+    }
 };
 
 const Operations = {
@@ -75,6 +82,19 @@ const Operations = {
                 const data = response.data;
                 dispatch(ActionCreator.addPost(data));
                 dispatch(ActionCreator.changeIsFormSendingFlag(false));
+            })
+            .catch(err => {
+                throw Error(err);
+            });
+    },
+    deletePost: (postId: number) => (dispatch: Dispatch) => {
+        dispatch(ActionCreator.changeIsLoadedFlag(false));
+
+        return axios.delete(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+            .then((response) => {
+                const data = response.data;
+                dispatch(ActionCreator.deletePost(postId));
+                dispatch(ActionCreator.changeIsLoadedFlag(true));
             })
             .catch(err => {
                 throw Error(err);
@@ -107,6 +127,20 @@ const reducer = (state = initialState, action: DataActionInterface) => {
         case ActionType.CHANGE_FLAG_FORM_SENDING:
             return extend(state, {
                 isFormSending: action.payload,
+            });
+
+        case ActionType.DELETE_POST:
+            const postId = action.payload;
+            let posts = state.posts;
+
+            const index = posts?.findIndex(item => item.id === postId);
+
+            if (index !== -1) {
+                posts.splice(index, 1);
+            }
+
+            return extend(state, {
+                posts,
             });
     }
     return state;

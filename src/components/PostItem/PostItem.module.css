@@ -1,3 +1,20 @@
 .post {
     display: block;
+
+    transition: all 0.2s ease;
+}
+
+.post:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+}
+
+.post:hover .postTitle {
+    color: var(--primary);
+}
+
+.postLink,
+.postLink:hover {
+    text-decoration: none;
+    color: inherit;
 }
