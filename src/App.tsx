@@ -1,19 +1,30 @@
 import React from "react";
-import {useSelector } from "react-redux";
-import {getPosts} from "./store/data/selectors";
 import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Redirect
+    Redirect,
+    RouteComponentProps
 } from "react-router-dom";
 import PostList from "./components/PostList/PostList";
 import PostDetail from "./components/PostDetails/PostDetail";
+import {useSelector} from "react-redux";
+import {getPosts} from "./store/data/selectors";
+
+interface MatchParams {
+    id: string;
+}
+
+interface MatchProps extends RouteComponentProps<MatchParams> {}
 
 const App: React.FC = (): JSX.Element => {
-    const posts = useSelector (getPosts);
+    const posts = useSelector(getPosts);
 
-    console.log(posts);
+    const renderPostPage = (id: string) => {
+        return (
+            <PostDetail postId={Number(id)}/>
+        );
+    };
 
     return (
         <Router>
@@ -22,11 +33,9 @@ const App: React.FC = (): JSX.Element => {
                     <Redirect to="/posts" />
                 </Route>
                 <Route exact path="/posts">
-                    <PostList />
+                    <PostList posts={posts} />
                 </Route>
-                <Route exact path="/posts/:id">
-                    <PostDetail />
-                </Route>
+                <Route exact path="/posts/:id"  render={({match}: MatchProps) => renderPostPage(match.params.id)} />
             </Switch>
         </Router>
     );

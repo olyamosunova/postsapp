@@ -1,25 +1,30 @@
 import {extend} from "../../utils";
 import {PostInterface} from "../../interfaces";
 import {Dispatch} from "redux";
+import axios from "axios";
 
 interface InitialDataStateInterface {
     posts?: Array<PostInterface> | [];
     isPostsLoaded?: boolean;
+    isFormSending: boolean;
 }
 
 interface DataActionInterface {
     type?: string | void;
-    payload?: PostInterface[] | boolean;
+    payload?: PostInterface[] | boolean | PostInterface;
 }
 
 const initialState: InitialDataStateInterface = {
     posts: [],
-    isPostsLoaded: false
+    isPostsLoaded: false,
+    isFormSending: false
 };
 
 const ActionType = {
     LOAD_POSTS: `LOAD_POSTS`,
     CHANGE_FLAG_POST_LOADED: `CHANGE_FLAG_POST_LOADED`,
+    ADD_POST: `ADD_POST`,
+    CHANGE_FLAG_FORM_SENDING: `CHANGE_FLAG_FORM_SENDING`
 };
 
 const ActionCreator = {
@@ -35,26 +40,46 @@ const ActionCreator = {
             payload: flag,
         };
     },
+    addPost: (post: PostInterface) => {
+        return {
+            type: ActionType.ADD_POST,
+            payload: post,
+        };
+    },
+    changeIsFormSendingFlag: (flag: boolean) => {
+        return {
+            type: ActionType.CHANGE_FLAG_FORM_SENDING,
+            payload: flag,
+        };
+    },
 };
 
 const Operations = {
     loadPosts: () => (dispatch: Dispatch) => {
-        const xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                try {
-                    const data = JSON.parse(xmlhttp.responseText);
-                    dispatch(ActionCreator.loadPosts(data));
-                    dispatch(ActionCreator.changeIsLoadedFlag(false));
-                } catch(err) {
-                    dispatch(ActionCreator.changeIsLoadedFlag(false));
-                }
-            }
-        };
+        return axios.get('https://jsonplaceholder.typicode.com/posts')
+            .then((response) => {
+                const data = response.data;
+                dispatch(ActionCreator.loadPosts(data));
+                dispatch(ActionCreator.changeIsLoadedFlag(true));
+            })
+            .catch(err => {
+                dispatch(ActionCreator.changeIsLoadedFlag(true));
+                throw Error(err);
+            });
+    },
+    sendPost: (post: PostInterface) => (dispatch: Dispatch) => {
+        dispatch(ActionCreator.changeIsFormSendingFlag(true));
 
-        xmlhttp.open("GET", 'https://jsonplaceholder.typicode.com/posts', true);
-        xmlhttp.send();
-    }
+        return axios.post('https://jsonplaceholder.typicode.com/posts', post)
+            .then((response) => {
+                const data = response.data;
+                dispatch(ActionCreator.addPost(data));
+                dispatch(ActionCreator.changeIsFormSendingFlag(false));
+            })
+            .catch(err => {
+                throw Error(err);
+            });
+    },
 };
 
 const reducer = (state = initialState, action: DataActionInterface) => {
@@ -67,6 +92,21 @@ const reducer = (state = initialState, action: DataActionInterface) => {
         case ActionType.CHANGE_FLAG_POST_LOADED:
             return extend(state, {
                 isPostsLoaded: action.payload,
+            });
+
+        case ActionType.ADD_POST:
+            const newPost = action.payload;
+            let allPosts = state.posts;
+
+            allPosts?.unshift(newPost);
+
+            return extend(state, {
+                posts: allPosts
+            });
+
+        case ActionType.CHANGE_FLAG_FORM_SENDING:
+            return extend(state, {
+                isFormSending: action.payload,
             });
     }
     return state;
