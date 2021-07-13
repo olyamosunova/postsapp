@@ -4,13 +4,13 @@ import {PostListProps} from "./PostList.props";
 import {Container, Row, Col} from "react-bootstrap";
 import PostItem from "../PostItem/PostItem";
 import {useSelector} from "react-redux";
-import {getPostsLoadedFlag} from "../../store/data/selectors";
+import {getLoadedFlag} from "../../store/data/selectors";
 import {Button} from "react-bootstrap";
 import Loader from "../Loader/Loader";
 import ModalAddPost from "../ModalAddPost/ModalAddPost";
 
 const PostList = ({posts, className, ...props}: PostListProps) => {
-    const isPostLoaded = useSelector(getPostsLoadedFlag);
+    const isPostLoaded = useSelector(getLoadedFlag);
 
     const [show, setShow] = useState(false);
 

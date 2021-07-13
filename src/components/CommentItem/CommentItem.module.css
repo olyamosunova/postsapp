@@ -1,16 +1,3 @@
-.post {
-    display: block;
-}
-
-.commentList {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-}
-
 .commentItem {
     display: flex;
     flex-direction: column;
@@ -46,4 +33,8 @@
     padding: 5px 10px;
 
     background-color: rgba(0, 0, 0, 0.02);
+}
+
+.commentTextarea {
+    min-height: 150px;
 }

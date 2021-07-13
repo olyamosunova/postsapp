@@ -9,7 +9,8 @@ import {
 import PostList from "./components/PostList/PostList";
 import PostDetail from "./components/PostDetails/PostDetail";
 import {useSelector} from "react-redux";
-import {getPosts} from "./store/data/selectors";
+import {getComments, getPosts} from "./store/data/selectors";
+import {getPost} from "./utils";
 
 interface MatchParams {
     id: string;
@@ -21,8 +22,9 @@ const App: React.FC = (): JSX.Element => {
     const posts = useSelector(getPosts);
 
     const renderPostPage = (id: string) => {
+        const post = getPost(posts, Number(id));
         return (
-            <PostDetail postId={Number(id)}/>
+            <PostDetail post={post}/>
         );
     };
 

@@ -56,6 +56,7 @@ const ModalAddPost = ({setShow, className, ...props}: ModalAddPostProps) => {
                                 placeholder="Title"
                                 value={formState.title}
                                 onChange={handlerChangeTitle}
+                                required
                             />
                         </Form.Group>
 
@@ -66,6 +67,7 @@ const ModalAddPost = ({setShow, className, ...props}: ModalAddPostProps) => {
                                 placeholder="Text"
                                 value={formState.body}
                                 onChange={handlerChangeText}
+                                required
                             />
                         </Form.Group>
 
