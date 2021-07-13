@@ -25,7 +25,8 @@ const ActionType = {
     CHANGE_FLAG_POST_LOADED: `CHANGE_FLAG_POST_LOADED`,
     ADD_POST: `ADD_POST`,
     CHANGE_FLAG_FORM_SENDING: `CHANGE_FLAG_FORM_SENDING`,
-    DELETE_POST: `DELETE_POST`
+    DELETE_POST: `DELETE_POST`,
+    EDIT_POST: `EDIT_POST`
 };
 
 const ActionCreator = {
@@ -57,6 +58,12 @@ const ActionCreator = {
         return {
             type: ActionType.DELETE_POST,
             payload: postId,
+        };
+    },
+    editPost: (post: PostInterface) => {
+        return {
+            type: ActionType.EDIT_POST,
+            payload: post,
         };
     }
 };
@@ -91,10 +98,22 @@ const Operations = {
         dispatch(ActionCreator.changeIsLoadedFlag(false));
 
         return axios.delete(`https://jsonplaceholder.typicode.com/posts/${postId}`)
-            .then((response) => {
-                const data = response.data;
+            .then(() => {
                 dispatch(ActionCreator.deletePost(postId));
                 dispatch(ActionCreator.changeIsLoadedFlag(true));
+            })
+            .catch(err => {
+                throw Error(err);
+            });
+    },
+    editPost: (post: PostInterface) => (dispatch: Dispatch) => {
+        dispatch(ActionCreator.changeIsFormSendingFlag(true));
+
+        return axios.put(`https://jsonplaceholder.typicode.com/posts/${post.id}`, post)
+            .then((response) => {
+                const data = response.data;
+                dispatch(ActionCreator.editPost(data));
+                dispatch(ActionCreator.changeIsFormSendingFlag(false));
             })
             .catch(err => {
                 throw Error(err);
@@ -116,8 +135,9 @@ const reducer = (state = initialState, action: DataActionInterface) => {
 
         case ActionType.ADD_POST:
             const newPost = action.payload;
-            let allPosts = state.posts;
+            let allPosts = state.posts?.slice();
 
+            // @ts-ignore
             allPosts?.unshift(newPost);
 
             return extend(state, {
@@ -130,17 +150,34 @@ const reducer = (state = initialState, action: DataActionInterface) => {
             });
 
         case ActionType.DELETE_POST:
-            const postId = action.payload;
+            const postId = action.payload ?? 0;
             let posts = state.posts;
 
             const index = posts?.findIndex(item => item.id === postId);
 
             if (index !== -1) {
-                posts.splice(index, 1);
+                // @ts-ignore
+                posts?.splice(index, 1);
             }
 
             return extend(state, {
                 posts,
+            });
+
+        case ActionType.EDIT_POST:
+            const post = action.payload;
+            let postsList = state.posts?.slice();
+
+            // @ts-ignore
+            const indexPost = postsList?.findIndex(item => item.id === post.id);
+
+            if (indexPost !== -1) {
+                // @ts-ignore
+                postsList?.splice(indexPost, 1, post);
+            }
+
+            return extend(state, {
+                posts: postsList,
             });
     }
     return state;

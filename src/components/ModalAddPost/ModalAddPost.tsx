@@ -36,7 +36,6 @@ const ModalAddPost = ({setShow, className, ...props}: ModalAddPostProps) => {
 
     const handlerSubmitForm = async (evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        console.log('submit');
 
         await dispatch(DataOperations.sendPost(formState));
         handleClose();
